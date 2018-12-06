@@ -13,8 +13,8 @@ class NewVisitorTest(unittest.TestCase):
         # Foosball local admin opens the web app
         self.browser.get('http://localhost:8000')
 
-        # (S)he notices the name TGIFoosball in the title
-        self.assertIn('TGIFoosball', self.browser.title)
+        # (S)he notices the name T.G.I.Foosball in the title
+        self.assertIn('T.G.I.Foosball', self.browser.title)
         self.fail("Finish the test!")
 
         # The admin is invited to enter a new player

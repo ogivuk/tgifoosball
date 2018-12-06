@@ -1,2 +1,3 @@
-# tgifoosball
+# T.G.I.Foosball
+
 
