@@ -13,19 +13,34 @@ class NewVisitorTest(unittest.TestCase):
         # Foosball local admin opens the web app
         self.browser.get('http://localhost:8000')
 
-        # (S)he notices the name T.G.I.Foosball in the title
+        # (S)he notices the name T.G.I.Foosball in the title and the first header
         self.assertIn('T.G.I.Foosball', self.browser.title)
-        self.fail("Finish the test!")
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('T.G.I.Foosball', header_text)
 
         # The admin is invited to enter a new player
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertEqual(
+            inputbox.get_attribute('placeholder'),
+            "Enter a new player name"
+        )
 
         # The admin types "John Doe" into a text box
+        inputbox.send_keys('John Doe')
 
         # When the admin hits enter, the page updates, and now the page lists
         # "1: John Doe" as a player in the list of players:
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
 
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_element_by_tag_name('tr')
+        self.assertTrue(
+            any(row.text == '1: John Doe' for row in rows)
+        )
         # There is still a text box inviting the admin to add another player.
         # The admin enters "Jenny Doe":
+        self.fail('Finish the test!')
 
         # The page updates again, and now shows both players in the list:
 
