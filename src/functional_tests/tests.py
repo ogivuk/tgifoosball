@@ -1,9 +1,9 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
-import unittest
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -18,7 +18,7 @@ class NewVisitorTest(unittest.TestCase):
 
     def test_can_add_players_and_retrieve_them_later(self):
         # Foosball local admin opens the web app
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
 
         # (S)he notices the name T.G.I.Foosball in the title and the first header
         self.assertIn('T.G.I.Foosball', self.browser.title)
@@ -55,6 +55,3 @@ class NewVisitorTest(unittest.TestCase):
         self.fail('Finish the test!')
 
         # Satisfied, the admin goes back to sleep
-
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
