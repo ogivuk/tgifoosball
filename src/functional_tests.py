@@ -37,15 +37,22 @@ class NewVisitorTest(unittest.TestCase):
 
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1: John Doe' for row in rows),
-            "New player did not appear in table"
-        )
+        self.assertIn('1: John Doe', [row.text for row in rows])
+
         # There is still a text box inviting the admin to add another player.
         # The admin enters "Jenny Doe":
-        self.fail('Finish the test!')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Jenny Doe')
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
 
         # The page updates again, and now shows both players in the list:
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: John Doe', [row.text for row in rows])
+        self.assertIn('2: Jenny Doe', [row.text for row in rows])
+
+        self.fail('Finish the test!')
 
         # Satisfied, the admin goes back to sleep
 
