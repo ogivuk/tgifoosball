@@ -12,23 +12,6 @@ class HomePageTest(TestCase):
         response = self.client.get('/')
         self.assertTemplateUsed(response,'home.html')
 
-    def test_can_save_a_POST_request(self):
-        self.client.post('/', data={'item_text': 'A new player'})
-
-        self.assertEqual(Player.objects.count(), 1)
-        new_player = Player.objects.first()
-        self.assertEqual(new_player.name, 'A new player')
-
-    def test_redirects_after_POST(self):
-        response = self.client.post('/', data={'item_text': 'A new player'})
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'],'/tournament/the-only-tournament-in-the-world/')
-
-    def test_only_saves_players_when_necessary(self):
-        self.client.get('/')
-        self.assertEqual(Player.objects.count(), 0)
-
 class PlayerModelTest(TestCase):
 
     def test_saving_and_retrieving_players(self):
@@ -62,3 +45,17 @@ class TournamentViewTest(TestCase):
 
         self.assertContains(response, "Player 1")
         self.assertContains(response, "Player 2")
+
+class NewTournamentTest(TestCase):
+
+    def test_can_save_a_POST_request(self):
+        self.client.post('/tournament/new', data={'item_text': 'A new player'})
+
+        self.assertEqual(Player.objects.count(), 1)
+        new_player = Player.objects.first()
+        self.assertEqual(new_player.name, 'A new player')
+
+    def test_redirects_after_POST(self):
+        response = self.client.post('/tournament/new', data={'item_text': 'A new player'})
+
+        self.assertRedirects(response, '/tournament/the-only-tournament-in-the-world/')
