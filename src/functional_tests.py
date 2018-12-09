@@ -11,6 +11,11 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('row_text',[row.text for row in rows])
+
     def test_can_add_players_and_retrieve_them_later(self):
         # Foosball local admin opens the web app
         self.browser.get('http://localhost:8000')
@@ -34,10 +39,7 @@ class NewVisitorTest(unittest.TestCase):
         # "1: John Doe" as a player in the list of players:
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
-
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('1: John Doe', [row.text for row in rows])
+        self.check_for_row_in_list_table('1: John Doe')
 
         # There is still a text box inviting the admin to add another player.
         # The admin enters "Jenny Doe":
@@ -47,10 +49,8 @@ class NewVisitorTest(unittest.TestCase):
         time.sleep(1)
 
         # The page updates again, and now shows both players in the list:
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('1: John Doe', [row.text for row in rows])
-        self.assertIn('2: Jenny Doe', [row.text for row in rows])
+        self.check_for_row_in_list_table('1: John Doe')
+        self.check_for_row_in_list_table('2: Jenny Doe')
 
         self.fail('Finish the test!')
 
