@@ -18,4 +18,5 @@ from tournament import views
 
 urlpatterns = [
     path('', views.home_page, name='home'),
+    path('tournament/the-only-tournament-in-the-world/', views.view_tournament, name='view_tournament'),
 ]

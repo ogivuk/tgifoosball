@@ -34,7 +34,7 @@ class NewVisitorTest(LiveServerTestCase):
         # (S)he notices the name T.G.I.Foosball in the title and the first header
         self.assertIn('T.G.I.Foosball', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertIn('T.G.I.Foosball', header_text)
+        self.assertIn('Tournament', header_text)
 
         # The admin is invited to enter a new player
         inputbox = self.browser.find_element_by_id('id_new_item')

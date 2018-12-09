@@ -5,7 +5,9 @@ from tournament.models import Player
 def home_page(request):
     if request.method == "POST":
         Player.objects.create(name=request.POST['item_text'])
-        return redirect('/')
+        return redirect('/tournament/the-only-tournament-in-the-world/')
+    return render(request, 'home.html')
 
+def view_tournament(request):
     players = Player.objects.all()
-    return render(request, 'home.html', {'players': players})
+    return render(request,'tournament.html', {'players': players})

@@ -8,10 +8,6 @@ from tournament.models import Player
 
 class HomePageTest(TestCase):
 
-    def test_root_url_resolves_to_home_page_view(self):
-        found = resolve('/')
-        self.assertEqual(found.func, home_page)
-
     def test_uses_home_template(self):
         response = self.client.get('/')
         self.assertTemplateUsed(response,'home.html')
@@ -27,20 +23,11 @@ class HomePageTest(TestCase):
         response = self.client.post('/', data={'item_text': 'A new player'})
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'],'/')
+        self.assertEqual(response['location'],'/tournament/the-only-tournament-in-the-world/')
 
     def test_only_saves_players_when_necessary(self):
         self.client.get('/')
         self.assertEqual(Player.objects.count(), 0)
-
-    def test_displays_all_list_items(self):
-        Player.objects.create(name="Player 1")
-        Player.objects.create(name="Player 2")
-
-        response = self.client.get('/')
-
-        self.assertIn('Player 1', response.content.decode())
-        self.assertIn('Player 2', response.content.decode())
 
 class PlayerModelTest(TestCase):
 
@@ -60,3 +47,18 @@ class PlayerModelTest(TestCase):
         second_saved_player = saved_players[1]
         self.assertEqual(first_saved_player.name, "The first (ever) player")
         self.assertEqual(second_saved_player.name, "Player the second")
+
+class TournamentViewTest(TestCase):
+
+    def test_uses_tournament_template(self):
+        response = self.client.get("/tournament/the-only-tournament-in-the-world/")
+        self.assertTemplateUsed(response, "tournament.html")
+    
+    def test_displays_all_players(self):
+        Player.objects.create(name="Player 1")
+        Player.objects.create(name="Player 2")
+
+        response = self.client.get("/tournament/the-only-tournament-in-the-world/")
+
+        self.assertContains(response, "Player 1")
+        self.assertContains(response, "Player 2")
