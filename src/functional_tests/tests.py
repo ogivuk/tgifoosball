@@ -61,6 +61,43 @@ class NewVisitorTest(LiveServerTestCase):
         self.wait_for_row_in_list_table('1: John Doe')
         self.wait_for_row_in_list_table('2: Jenny Doe')
 
-        self.fail('Finish the test!')
+    def test_multiple_tournaments_have_user_lists_at_different_urls(self):
+        # Thomas creates a new tournament
+        self.browser.get(self.live_server_url)
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys("John Doe")
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table("1: John Doe")
 
-        # Satisfied, the admin goes back to sleep
+        # He notices that the tournament has a unique URL
+        thomas_tournament_url = self.browser.current_url
+        self.assertRegex(thomas_tournament_url, '/tournament/.+')
+
+        # Now, another admin, Ognjen, wants to create another tournament
+
+        ## We use a new browser session to make sure that no information
+        ## of Thomas is coming through from cookies, etc.
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+
+        # Ognjen visits the main page. There is no sign of Thomas' tournament
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('John Doe', page_text)
+        self.assertNotIn('Jenny Doe', page_text)
+
+        # Ognjen creates a new tournament
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Jenny Doe')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table("1: Jenny Doe")
+
+        # Ognjen gets his own URL for the tournament
+        ognjen_tournament_url = self.browser.current_url
+        self.assertRegex(ognjen_tournament_url, "/tournament/.+")
+        self.assertNotEqual(thomas_tournament_url, ognjen_tournament_url)
+
+        # Again, there is no trace of Thomas' tournament
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn("John Doe", page_text)
+        self.assertIn("Jenny Doe", page_text)
