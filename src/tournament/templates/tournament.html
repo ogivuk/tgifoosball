@@ -4,13 +4,13 @@
     </head>
     <body>
         <h1>T.G.I.Foosball Tournament Players</h1>
-        <form method="POST" action="/tournament/new">
+        <form method="POST" action="/tournament/{{ tournament.id }}/add_player">
             <input name="item_text" id="id_new_item" placeholder="Enter a new player name" />
             {% csrf_token %}
         </form>
 
         <table id="id_list_table">
-            {% for player in players %}
+            {% for player in tournament.player_set.all %}
                 <tr><td>{{ forloop.counter }}: {{ player.name }}</td></tr>
             {% endfor %}
         </table>

@@ -19,5 +19,6 @@ from tournament import views
 urlpatterns = [
     path('', views.home_page, name='home'),
     path('tournament/new', views.new_tournament, name="new_tournament"),
-    path('tournament/the-only-tournament-in-the-world/', views.view_tournament, name='view_tournament'),
+    path('tournament/<int:tournament_id>/', views.view_tournament, name='view_tournament'),
+    path('tournament/<int:tournament_id>/add_player', views.add_player, name='add_player'),
 ]
